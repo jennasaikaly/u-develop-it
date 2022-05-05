@@ -28,7 +28,11 @@ const db = mysql.createConnection(
 //the callback function will handle the client's request and database response (req, res)
 app.get('/api/candidates', (req, res) => {
     // the SQL statement `SELECT * FROM candidates`is assigned to the SQL variable
-    const sql = `SELECT * FROM candidates`;
+    const sql = `SELECT candidates.*, parties.name 
+             AS party_name 
+             FROM candidates 
+             LEFT JOIN parties 
+             ON candidates.party_id = parties.id`;
 
     db.query(sql, (err, rows) => {
         //error-handling conditional
@@ -53,7 +57,12 @@ app.get('/api/candidates', (req, res) => {
 
 app.get('/api/candidate/:id', (req, res) => {
     // the SQL statement `SELECT * FROM candidates`is assigned to the sql variable
-    const sql = `SELECT * FROM candidates WHERE id = ?`;
+    const sql = `SELECT candidates.*, parties.name 
+             AS party_name 
+             FROM candidates 
+             LEFT JOIN parties 
+             ON candidates.party_id = parties.id 
+             WHERE candidates.id = ?`;
     //assign the captured value populated in the req.params object with the key id to the variable 'params'
     //because params can be accepted in the database call as an array, params is assigned as an array with a 
     //single element, 'req.params.id'
